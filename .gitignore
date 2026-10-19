@@ -1,0 +1,21 @@
+# Python / Jupyter
+.venv/
+venv/
+__pycache__/
+.ipynb_checkpoints/
+
+# LaTeX build files
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# Course instruction PDFs
+DL_AML_Project_Ideas.pdf
+CSAI_Project_Instructions_Phase_1_and_Phase_2.pdf
+
+.DS_Store

@@ -1,0 +1,9 @@
+pandas
+numpy
+scikit-learn
+xgboost
+matplotlib
+seaborn
+nycflights13
+setuptools<81
+jupyter
