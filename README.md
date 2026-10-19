@@ -29,7 +29,7 @@ Then run all cells (Kernel → Restart & Run All).
 |------|-------------|
 | `flight_delay_prediction.ipynb` | All code: data loading, EDA, features, models, evaluation |
 | `figures/` | Plots saved by the notebook (used in the report) |
-| `report/main.tex`, `report/main.pdf` | Project report in IEEE format (`references.bib` holds the references) |
+| `report/main.tex`, `report/main.pdf` | Project report in IEEE format |
 | `requirements.txt` | Python packages |
 
 ## Method (short)
@@ -57,8 +57,8 @@ The scheduled departure hour and the carrier's recent delay rate are the most im
 
 | Member | Contribution |
 |--------|--------------|
-| Member 1 | Data loading and EDA |
-| Member 2 | Leakage removal and feature engineering |
-| Member 3 | Logistic Regression |
-| Member 4 | XGBoost |
-| Member 5 | Evaluation, literature review, README |
+| Asad Ali | Data loading and EDA |
+| Divyansh Bhartia | Leakage removal and feature engineering |
+| Vikrant Yadav | Logistic Regression |
+| Mayank Pillai | XGBoost |
+| Prashant Raj | Evaluation, literature review, README |

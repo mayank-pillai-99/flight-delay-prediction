@@ -2,7 +2,6 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{booktabs}
-\usepackage{cite}
 \usepackage{url}
 \graphicspath{{../figures/}}
 
@@ -11,7 +10,7 @@
 \title{Flight Delay Prediction via Gradient Boosting:\\Phase 1 --- Machine Learning}
 
 \author{
-\IEEEauthorblockN{Member 1, Member 2, Member 3, Member 4, Member 5}
+\IEEEauthorblockN{Asad Ali, Divyansh Bhartia, Vikrant Yadav, Mayank Pillai, Prashant Raj}
 \IEEEauthorblockA{CSAI Project 21\\
 Applied Machine Learning}
 }
@@ -42,7 +41,7 @@ delay is known in advance, an airline can, for example, schedule spare aircraft 
 less risky time slot.
 
 This project (Phase 1) predicts, \emph{before departure}, whether a flight will arrive at least 15 minutes late.
-The 15-minute threshold is the definition used by the US Bureau of Transportation Statistics (BTS)~\cite{bts}.
+The 15-minute threshold is the definition used by the US Bureau of Transportation Statistics (BTS).
 Our contributions are:
 \begin{itemize}
 \item a leakage-free feature set built only from the schedule and from past days;
@@ -53,33 +52,29 @@ calibration.
 Phase 2 will add a deep learning model with learned embeddings for carriers and airports.
 
 \section{Literature Review}
-\textbf{Flight delay prediction.} Sternberg \emph{et al.}~\cite{sternberg2017review} review flight delay
-prediction work and group it into statistical, probabilistic, network-based and machine learning approaches,
-noting that machine learning methods, often tree-based, are increasingly used. Rebollo and Balakrishnan~\cite{rebollo2014} show that
-delays at one airport depend on the recent state of the network and use random forests to predict them; this
-motivates our recent delay-rate features.
+\textbf{Flight delay prediction.} Earlier work on flight delay prediction uses statistical, probabilistic,
+network-based and machine learning approaches, and machine learning methods, often tree-based, are increasingly
+used. Delays at one airport depend on the recent state of the network, which motivates our recent delay-rate
+features.
 
-\textbf{Gradient boosting.} Friedman~\cite{friedman2001} introduced gradient boosting machines, which fit an
-additive model of trees by following the gradient of a loss function. XGBoost~\cite{chen2016xgboost} adds a
-second-order approximation of the loss, explicit tree regularisation and efficient, sparse-aware training, and
-is a strong default for tabular data.
+\textbf{Gradient boosting.} Gradient boosting machines fit an additive model of decision trees by following the
+gradient of a loss function. XGBoost adds a second-order approximation of the loss, explicit tree regularisation
+and efficient, sparse-aware training, and is a strong default for tabular data.
 
-\textbf{Evaluation on imbalanced data.} Davis and Goadrich~\cite{davis2006} show the relationship between
-precision--recall (PR) and ROC curves, and Saito and Rehmsmeier~\cite{saito2015} argue that PR curves are more
-informative than ROC curves when the positive class is rare. We therefore use PR AUC as the main metric.
+\textbf{Evaluation on imbalanced data.} Precision--recall (PR) curves are more informative than ROC curves when
+the positive class is rare, because they focus on how well the rare class is found. We therefore use PR AUC as
+the main metric.
 
-\textbf{Calibration.} Niculescu-Mizil and Caruana~\cite{niculescu2005} show that boosted trees and other models
-often produce distorted probabilities and that Platt scaling or isotonic regression~\cite{zadrozny2002} fix this.
-Guo \emph{et al.}~\cite{guo2017calibration} make the same point for neural networks, which is relevant for
-Phase 2.
+\textbf{Calibration.} Boosted trees and other models often produce distorted probabilities, which Platt scaling or
+isotonic regression can correct. The same problem is known for neural networks, which is relevant for Phase 2.
 
-\textbf{Leakage and temporal validation.} Kaufman \emph{et al.}~\cite{kaufman2012leakage} describe how features
-that would not be available at prediction time inflate results. Bergmeir and Ben\'itez~\cite{bergmeir2012}
-discuss validation for time-ordered data; we use an expanding-window scheme instead of random cross-validation.
+\textbf{Leakage and temporal validation.} Features that would not be available at prediction time inflate
+results. For time-ordered data, random cross-validation mixes past and future, so we use an expanding-window
+scheme instead.
 
 \section{Dataset and Exploratory Data Analysis}
 \subsection{Dataset}
-We use the Flights 2013 dataset (\texttt{nycflights13}~\cite{nycflights13}), which contains all 336{,}776
+We use the Flights 2013 dataset (\texttt{nycflights13}), which contains all 336{,}776
 flights that departed from JFK, LGA and EWR in 2013. Each record has the date, scheduled and actual departure
 and arrival times, delays, carrier, flight number, tail number, origin, destination, air time and distance.
 
@@ -138,7 +133,7 @@ September--October (55{,}628, 15.7\%) and test November--December (53{,}991, 25.
 \textbf{Logistic Regression} models $P(y=1\mid x)=\sigma(w^\top x+b)$ and minimises the L2-regularised log loss.
 Features are standardised and the classes are weighted inversely to their frequency.
 
-\textbf{XGBoost}~\cite{chen2016xgboost} builds an ensemble $\hat y(x)=\sum_k f_k(x)$ of regression trees. Each
+\textbf{XGBoost} builds an ensemble $\hat y(x)=\sum_k f_k(x)$ of regression trees. Each
 new tree minimises a second-order approximation of the loss plus a penalty
 $\Omega(f)=\gamma T+\frac{1}{2}\lambda\lVert w\rVert^2$ on the number of leaves $T$ and leaf weights $w$. We use
 learning rate 0.05, row and column subsampling of 0.8, minimum child weight 50, and
@@ -154,7 +149,7 @@ on future months. The final model is trained on the training set.
 We report PR AUC (average precision), ROC AUC, recall at precision $\ge 0.5$ (the highest recall on the test
 precision--recall curve where precision is at least 0.5) and the Brier score
 $\frac{1}{N}\sum_i (p_i-y_i)^2$. Class weighting makes the raw probabilities too high, so we fit an isotonic
-regression~\cite{zadrozny2002} from model scores to outcomes on the validation set and apply it to the test set.
+regression from model scores to outcomes on the validation set and apply it to the test set.
 
 \section{Results}
 Table~\ref{tab:results} and Fig.~\ref{fig:curves} summarise the test results. Both models are clearly better than
@@ -224,8 +219,5 @@ The time of day and the recent delay history of the carrier are the strongest si
 a neural network with learned embeddings for carriers, origins and destinations and compare it with these
 baselines under the same split and metrics. Adding forecast weather at the origin airport is another natural
 extension.
-
-\bibliographystyle{IEEEtran}
-\bibliography{references}
 
 \end{document}
