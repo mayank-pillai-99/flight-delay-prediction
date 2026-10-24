@@ -68,6 +68,7 @@ The scheduled departure hour and the carrier's recent delay rate are the most im
 |--------|--------------|
 | Asad Ali | Data loading and EDA |
 | Divyansh Bhartia | Leakage removal and feature engineering |
-| Vikrant Yadav | Logistic Regression |
+| [Vikrant Yadav](https://github.com/vikgenix) | Logistic Regression |
 | Mayank Pillai | XGBoost |
 | Prashant Raj | Evaluation, literature review, README |
+
