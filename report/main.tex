@@ -135,8 +135,9 @@ The data are split by date: train January--August (217{,}727 flights, 26.4\% del
 September--October (55{,}628, 15.7\%) and test November--December (53{,}991, 25.8\%). The test set is used once.
 
 \subsection{Models}
-\textbf{Logistic Regression} models $P(y=1\mid x)=\sigma(w^\top x+b)$ and minimises the L2-regularised log loss.
-Features are standardised and the classes are weighted inversely to their frequency.
+\textbf{Logistic Regression} models the conditional probability $P(y=1\mid x)=\sigma(w^\top x+b)$ by minimising the L2-regularised log loss.
+All numerical features are standardised using a zero-mean, unit-variance scaler fitted on the training split, and the classes are weighted inversely proportional to their class frequencies (\texttt{class\_weight='balanced'}) to address class imbalance.
+
 
 \textbf{XGBoost} builds an ensemble $\hat y(x)=\sum_k f_k(x)$ of regression trees. Each
 new tree minimises a second-order approximation of the loss plus a penalty
