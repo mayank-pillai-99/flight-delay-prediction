@@ -42,22 +42,21 @@ delay is known in advance, an airline can, for example, schedule spare aircraft 
 less risky time slot.
 
 This project (Phase 1) predicts, \emph{before departure}, whether a flight will arrive at least 15 minutes late.
-The 15-minute threshold is the standard definition established by the US Bureau of Transportation Statistics (BTS)~\cite{bts}.
+The 15-minute threshold is the standard definition established by the US Bureau of Transportation Statistics (BTS).
 Our contributions are:
 \begin{itemize}
 \item a leakage-free feature set built only from the schedule and from past days;
 \item a date-based evaluation that mimics real use, with time-series tuning of the model;
-\item a comparison of Logistic Regression and XGBoost~\cite{chen2016xgboost} on PR AUC, ROC AUC, recall at a fixed precision and
+\item a comparison of Logistic Regression and XGBoost on PR AUC, ROC AUC, recall at a fixed precision and
 calibration.
 \end{itemize}
 Phase 2 will add a deep learning model with learned embeddings for carriers and airports.
 
 \section{Literature Review}
 \textbf{Flight delay prediction.} Earlier work on flight delay prediction uses statistical, probabilistic,
-network-based and machine learning approaches, and machine learning methods, particularly tree-based models like XGBoost~\cite{chen2016xgboost}, are increasingly
-used. The dataset used in this work is based on the curated \texttt{nycflights13} collection~\cite{wickham2014}. Delays at one airport depend on the recent state of the network, which motivates our recent delay-rate
+network-based and machine learning approaches, and machine learning methods, particularly tree-based models like XGBoost, are increasingly
+used. Delays at one airport depend on the recent state of the network, which motivates our recent delay-rate
 features.
-
 
 \textbf{Gradient boosting.} Gradient boosting machines fit an additive model of decision trees by following the
 gradient of a loss function. XGBoost adds a second-order approximation of the loss, explicit tree regularisation
@@ -136,7 +135,7 @@ September--October (55{,}628, 15.7\%) and test November--December (53{,}991, 25.
 
 \subsection{Models}
 \textbf{Logistic Regression} models the conditional probability $P(y=1\mid x)=\sigma(w^\top x+b)$ by minimising the L2-regularised log loss.
-All numerical features are standardised using a zero-mean, unit-variance scaler fitted on the training split, and the classes are weighted inversely proportional to their class frequencies (\texttt{class\_weight='balanced'}) to address class imbalance.
+All input features (numeric and one-hot) are standardised to zero mean and unit variance with a scaler fitted on the training split, and the classes are weighted inversely proportional to their class frequencies (\texttt{class\_weight='balanced'}) to address class imbalance.
 
 
 \textbf{XGBoost} builds an ensemble $\hat y(x)=\sum_k f_k(x)$ of regression trees. Each
@@ -228,16 +227,5 @@ a neural network with learned embeddings for carriers, origins and destinations 
 baselines under the same split and metrics. Adding forecast weather at the origin airport is another natural
 extension.
 
-\begin{thebibliography}{1}
-\bibitem{bts}
-U.S. Bureau of Transportation Statistics, ``Understanding the Reporting of Causes of Flight Delays and Cancellations,'' 2013.
-
-\bibitem{wickham2014}
-H.~Wickham, ``nycflights13: Flights that departed NYC in 2013,'' \emph{R package version 0.1}, 2014.
-
-\bibitem{chen2016xgboost}
-T.~Chen and C.~Guestrin, ``XGBoost: A scalable tree boosting system,'' in \emph{Proc. 22nd ACM SIGKDD Int. Conf. Knowl. Discov. Data Min.}, 2016, pp. 785--794.
-\end{thebibliography}
 
 \end{document}
-
