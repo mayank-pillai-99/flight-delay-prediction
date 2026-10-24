@@ -31,12 +31,14 @@ Then run all cells (Kernel → Restart & Run All).
 
 ## Repository structure
 
-| File | Description |
-|------|-------------|
+| File / Folder | Description |
+|---------------|-------------|
 | `flight_delay_prediction.ipynb` | All code: data loading, EDA, features, models, evaluation |
 | `figures/` | Plots saved by the notebook (used in the report) |
 | `report/main.tex`, `report/main.pdf` | Project report in IEEE format |
 | `requirements.txt` | Python packages |
+| `.gitignore` | Project-specific ignore rules for environments and temporary files |
+
 
 ## Method (short)
 
