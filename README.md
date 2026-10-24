@@ -14,14 +14,20 @@ Python package, so no manual download is needed.
 
 ## How to run
 
+### Prerequisites
+- Python 3.9 to 3.11 recommended.
+
+### Setup and Execution
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
 jupyter notebook flight_delay_prediction.ipynb
 ```
 
 Then run all cells (Kernel → Restart & Run All).
+
 
 ## Repository structure
 
