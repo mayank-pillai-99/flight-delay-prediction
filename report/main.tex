@@ -19,8 +19,9 @@ Applied Machine Learning}
 
 \begin{abstract}
 Flight delays cost airlines and passengers time and money. We predict whether a flight will arrive 15 or more
-minutes late using only information available before departure: the schedule, carrier, route, scheduled airport
-congestion and the recent delay history of the carrier and airports. We use the 2013 New York City flights
+minutes late using only information available before departure: the schedule (with cyclic encoding of the hour
+and day of week), carrier, route, scheduled airport congestion and the recent delay history of the carrier,
+airports and route. We use the 2013 New York City flights
 dataset (327{,}346 completed flights), remove all post-departure fields to avoid data leakage, and split the data
 by date (train: January--August, validation: September--October, test: November--December). We compare Logistic
 Regression with XGBoost tuned by expanding-window time-series validation. XGBoost reaches a test PR AUC of 0.391
