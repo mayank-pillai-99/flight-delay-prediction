@@ -1,9 +1,21 @@
+# Core Data Science
 pandas
 numpy
+scipy
+
+# Machine Learning
 scikit-learn
 xgboost
+
+# Data Visualization
 matplotlib
 seaborn
+
+# Dataset & Compatibility
 nycflights13
 setuptools<81
+
+# Notebook Environment
 jupyter
+
+
