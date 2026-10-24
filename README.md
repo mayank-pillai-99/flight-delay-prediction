@@ -36,9 +36,10 @@ Then run all cells (Kernel → Restart & Run All).
 
 1. **Clean:** drop cancelled/diverted flights; target = arrival delay ≥ 15 min (24.5% of flights).
 2. **No leakage:** remove everything only known after departure (actual times, delays, air time).
-3. **Features:** day of week, weekend, scheduled departure/arrival hour, distance, carrier, origin, destination,
+3. **Features:** weekend flag, day of week and scheduled departure/arrival hour (cyclic sin/cos encoding), distance,
+   carrier, origin, destination,
    scheduled flights per airport per hour/day (counted on the full schedule, including later-cancelled flights),
-   and the carrier/origin/destination delay rate over the previous 7 calendar days.
+   and the carrier/origin/destination/route delay rate over the previous 7 calendar days.
 4. **Split by date:** train Jan–Aug, validation Sep–Oct, test Nov–Dec.
 5. **Models:** Logistic Regression and XGBoost (tuned with expanding-window time-series validation).
 6. **Calibration:** isotonic regression fitted on the validation set.
@@ -48,8 +49,8 @@ Then run all cells (Kernel → Restart & Run All).
 | Model | PR AUC | ROC AUC | Recall @ precision 0.5 | Brier (raw → calibrated) |
 |-------|--------|---------|------------------------|--------------------------|
 | Random guess | 0.258 | 0.500 | – | – |
-| Logistic Regression | 0.379 | 0.648 | 0.059 | 0.228 → 0.189 |
-| **XGBoost** | **0.386** | **0.653** | **0.105** | 0.220 → 0.188 |
+| Logistic Regression | 0.376 | 0.645 | 0.059 | 0.228 → 0.190 |
+| **XGBoost** | **0.391** | **0.656** | **0.111** | 0.219 → 0.188 |
 
 The scheduled departure hour and the carrier's recent delay rate are the most important features.
 

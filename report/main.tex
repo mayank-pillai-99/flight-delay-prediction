@@ -23,9 +23,9 @@ minutes late using only information available before departure: the schedule, ca
 congestion and the recent delay history of the carrier and airports. We use the 2013 New York City flights
 dataset (327{,}346 completed flights), remove all post-departure fields to avoid data leakage, and split the data
 by date (train: January--August, validation: September--October, test: November--December). We compare Logistic
-Regression with XGBoost tuned by expanding-window time-series validation. XGBoost reaches a test PR AUC of 0.386
-(random baseline 0.258) and ROC AUC of 0.653, against 0.379 and 0.648 for Logistic Regression; at 50\% precision
-it recalls 10.5\% of delayed flights versus 5.9\%. Isotonic calibration lowers the Brier score of both models from
+Regression with XGBoost tuned by expanding-window time-series validation. XGBoost reaches a test PR AUC of 0.391
+(random baseline 0.258) and ROC AUC of 0.656, against 0.376 and 0.645 for Logistic Regression; at 50\% precision
+it recalls 11.1\% of delayed flights versus 5.9\%. Isotonic calibration lowers the Brier score of both models from
 about 0.22--0.23 to 0.19. The scheduled departure hour and the carrier's recent delay rate are the most informative
 features.
 \end{abstract}
@@ -114,13 +114,16 @@ swapped and it has about 4{,}000 values), the flight number and redundant date/t
 
 \subsection{Features}
 \begin{itemize}
-\item \textbf{Calendar/schedule:} day of week, weekend flag, scheduled departure and arrival hour, distance.
+\item \textbf{Calendar/schedule:} weekend flag, distance, and the day of week and scheduled departure and arrival
+hour with \emph{cyclic encoding}: each value $t$ with period $P$ ($P=24$ for hours, $P=7$ for days) becomes
+$\sin(2\pi t/P)$ and $\cos(2\pi t/P)$, so that hour 23 is close to hour 0 and Sunday is close to Monday.
 \item \textbf{Categorical:} carrier, origin and destination (one-hot encoded).
 \item \textbf{Congestion:} number of flights scheduled to leave the same airport in the same hour and on the same day.
 These counts use the full schedule, including flights that were later cancelled: counting only completed flights
 would leak information, since bad-weather days have many cancellations.
-\item \textbf{History:} the share of delayed flights for the carrier, origin and destination over the previous
-seven calendar days. Daily counts of delayed and total flights are summed over a 7-day window that is shifted by
+\item \textbf{Route and history:} the route is the origin--destination pair (223 routes, e.g.\ JFK--LAX). For
+the carrier, origin, destination and route we compute the share of delayed flights over the previous seven
+calendar days. Daily counts of delayed and total flights are summed over a 7-day window that is shifted by
 one day, so a flight never sees its own day or the future. Missing values (no history yet) are filled with the training mean.
 \end{itemize}
 The month is not used as a feature because the test months never appear in the training data.
@@ -142,7 +145,7 @@ learning rate 0.05, row and column subsampling of 0.8, minimum child weight 50, 
 \textbf{Tuning.} Because delay patterns change with the season, a single validation period is a noisy guide. We
 therefore use expanding-window time-series validation with three folds (train Jan--Apr/validate May--Jun,
 Jan--Jun/Jul--Aug, Jan--Aug/Sep--Oct) and choose the tree depth $\in\{3,4,6\}$ and number of trees
-$\in\{100,300\}$ with the best mean PR AUC. The best setting was depth 3 with 100 trees (mean PR AUC 0.380); larger models did worse
+$\in\{100,300\}$ with the best mean PR AUC. The best setting was depth 3 with 100 trees (mean PR AUC 0.377); larger models did worse
 on future months. The final model is trained on the training set.
 
 \subsection{Evaluation and calibration}
@@ -154,7 +157,7 @@ regression from model scores to outcomes on the validation set and apply it to t
 \section{Results}
 Table~\ref{tab:results} and Fig.~\ref{fig:curves} summarise the test results. Both models are clearly better than
 random. XGBoost has the best PR AUC and ROC AUC, and its advantage is largest at high precision: when 50\% of
-alerts must be real delays, it finds 10.5\% of all delayed flights compared with 5.9\% for Logistic Regression.
+alerts must be real delays, it finds 11.1\% of all delayed flights compared with 5.9\% for Logistic Regression.
 
 \begin{table}[t]
 \centering
@@ -166,8 +169,8 @@ alerts must be real delays, it finds 10.5\% of all delayed flights compared with
 Model & PR AUC & ROC AUC & Rec@P0.5 & Brier \\
 \midrule
 Random guess & 0.258 & 0.500 & -- & -- \\
-Log. Regression & 0.379 & 0.648 & 0.059 & 0.228 \\
-XGBoost & \textbf{0.386} & \textbf{0.653} & \textbf{0.105} & \textbf{0.220} \\
+Log. Regression & 0.376 & 0.645 & 0.059 & 0.228 \\
+XGBoost & \textbf{0.391} & \textbf{0.656} & \textbf{0.111} & \textbf{0.219} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -180,7 +183,7 @@ XGBoost & \textbf{0.386} & \textbf{0.653} & \textbf{0.105} & \textbf{0.220} \\
 \end{figure}
 
 \textbf{Calibration.} Before calibration both models over-estimate the delay probability (Fig.~\ref{fig:calib}).
-After isotonic calibration the Brier score falls to 0.189 (Logistic Regression) and 0.188 (XGBoost). The
+After isotonic calibration the Brier score falls to 0.190 (Logistic Regression) and 0.188 (XGBoost). The
 calibrated models under-estimate delays because the calibration months were calmer than the test months.
 A constant prediction of the test delay rate would score 0.192, so the calibrated probabilities are reliable but
 only somewhat sharper than the average.
@@ -192,11 +195,13 @@ only somewhat sharper than the average.
 \label{fig:calib}
 \end{figure}
 
-\textbf{Feature importance.} The scheduled departure and arrival hours are the most important XGBoost features,
-followed by the carrier's recent delay rate, the number of flights scheduled from the origin that day, the weekend
-flag and specific carriers (e.g.\ UA, EV) (Fig.~\ref{fig:importance}). The largest standardised Logistic Regression
-coefficients agree: departure hour, daily scheduled flights at the origin and the carrier's recent delay rate are
-all positive, i.e.\ later, busier and recently delayed flights are more often late.
+\textbf{Feature importance.} The cyclic encodings of the scheduled departure and arrival hours are the most
+important XGBoost features, followed by the carrier's recent delay rate, the number of flights scheduled from the
+origin that day, the route's recent delay rate and specific carriers (e.g.\ EV) (Fig.~\ref{fig:importance}). The
+largest standardised Logistic Regression coefficients agree: the sine of the departure hour has a large negative
+weight (it is negative for afternoon and evening hours, so later flights get a higher risk), while daily scheduled
+flights at the origin and the recent delay rates of the route and carrier have positive weights. In short, later,
+busier and recently delayed flights are more often late.
 
 \begin{figure}[t]
 \centering
