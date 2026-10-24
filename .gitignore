@@ -1,8 +1,17 @@
 # Python / Jupyter
 .venv/
 venv/
+env/
 __pycache__/
+*.py[cod]
+*$py.class
 .ipynb_checkpoints/
+
+# Environment & IDE
+.env
+.env.*
+.vscode/
+.idea/
 
 # LaTeX build files
 *.aux
@@ -18,4 +27,7 @@ __pycache__/
 DL_AML_Project_Ideas.pdf
 CSAI_Project_Instructions_Phase_1_and_Phase_2.pdf
 
+# OS files
 .DS_Store
+Thumbs.db
+
