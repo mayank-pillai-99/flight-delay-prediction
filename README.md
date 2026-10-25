@@ -36,6 +36,7 @@ Then run all cells (Kernel → Restart & Run All).
 | `flight_delay_prediction.ipynb` | All code: data loading, EDA, features, models, evaluation |
 | `figures/` | Plots saved by the notebook (used in the report) |
 | `report/main.tex`, `report/main.pdf` | Project report in IEEE format |
+| `presentation/` | Viva presentation (`.pptx` with speaker notes, and `.pdf`) |
 | `requirements.txt` | Python packages |
 | `.gitignore` | Project-specific ignore rules for environments and temporary files |
 
