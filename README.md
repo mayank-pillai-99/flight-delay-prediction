@@ -1,4 +1,4 @@
-# Flight Delay Prediction (Project 21) — Phase 1: Machine Learning
+# Flight Delay Prediction 
 
 Predict whether a flight will **arrive 15 or more minutes late**, using only information that is known
 **before the flight departs** (schedule, carrier, route, airport congestion and past delay history).
