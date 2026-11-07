@@ -15,9 +15,12 @@ all ~336k flights that departed from New York City airports (JFK, LGA, EWR) in 2
 
 Each folder has its own README with setup steps, method and results.
 
-| Test PR AUC (Nov–Dec 2013) | Random | Logistic Regression | XGBoost | MLP (Phase 2) |
-|---|---|---|---|---|
-| | 0.258 | 0.376 | **0.391** | 0.386 |
+| Model | Phase | Test PR AUC (Nov–Dec 2013) |
+|---|---|---|
+| Random guess | – | 0.258 |
+| Logistic Regression | 1 | 0.376 |
+| XGBoost | 1 | **0.391** |
+| MLP with embeddings | 2 | 0.386 |
 
 ## Repository structure
 
