@@ -1,75 +1,38 @@
-# Flight Delay Prediction (Project 21) — Phase 1: Machine Learning
+# Flight Delay Prediction (Project 21)
 
 Predict whether a flight will **arrive 15 or more minutes late**, using only information that is known
 **before the flight departs** (schedule, carrier, route, airport congestion and past delay history).
 
-Phase 1 covers the Machine Learning part: data quality checks, EDA, feature engineering,
-Logistic Regression and XGBoost models, and their evaluation.
+**Dataset:** the Kaggle "Flights 2013" dataset ([nycflights13](https://github.com/tidyverse/nycflights13)):
+all ~336k flights that departed from New York City airports (JFK, LGA, EWR) in 2013.
 
-## Dataset
+## Project phases
 
-The Kaggle "Flights 2013" dataset, which is the [nycflights13](https://github.com/tidyverse/nycflights13) data: all ~336k flights that departed
-from New York City airports (JFK, LGA, EWR) in 2013. It is loaded directly with the `nycflights13`
-Python package, so no manual download is needed.
+| Phase | Folder | Content | Status |
+|-------|--------|---------|--------|
+| **Phase 1: Machine Learning** | [`phase1/`](phase1) | EDA, feature engineering, Logistic Regression and XGBoost, report, presentation | ✅ Complete |
+| **Phase 2: Deep Learning** | [`phase2/`](phase2) | Neural network with learned embeddings, compared with the Phase 1 models | 🚧 In progress |
 
-## How to run
-
-### Prerequisites
-- Python 3.9 to 3.11 recommended.
-
-### Setup and Execution
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-jupyter notebook flight_delay_prediction.ipynb
-```
-
-Then run all cells (Kernel → Restart & Run All).
-
+Each folder has its own README with setup steps, method and results.
 
 ## Repository structure
 
-| File / Folder | Description |
-|---------------|-------------|
-| `flight_delay_prediction.ipynb` | All code: data loading, EDA, features, models, evaluation |
-| `figures/` | Plots saved by the notebook (used in the report) |
-| `report/main.tex`, `report/main.pdf` | Project report in IEEE format |
-| `presentation/` | Viva presentation (`.pptx` with speaker notes, and `.pdf`) |
-| `requirements.txt` | Python packages |
-| `.gitignore` | Project-specific ignore rules for environments and temporary files |
-
-
-## Method (short)
-
-1. **Clean:** drop cancelled/diverted flights; target = arrival delay ≥ 15 min (24.5% of flights).
-2. **No leakage:** remove everything only known after departure (actual times, delays, air time).
-3. **Features:** weekend flag, day of week and scheduled departure/arrival hour (cyclic sin/cos encoding), distance,
-   carrier, origin, destination,
-   scheduled flights per airport per hour/day (counted on the full schedule, including later-cancelled flights),
-   and the carrier/origin/destination/route delay rate over the previous 7 calendar days.
-4. **Split by date:** train Jan–Aug, validation Sep–Oct, test Nov–Dec.
-5. **Models:** Logistic Regression and XGBoost (tuned with expanding-window time-series validation).
-6. **Calibration:** isotonic regression fitted on the validation set.
-
-## Results (test set, Nov–Dec 2013)
-
-| Model | PR AUC | ROC AUC | Recall @ precision 0.5 | Brier (raw → calibrated) |
-|-------|--------|---------|------------------------|--------------------------|
-| Random guess | 0.258 | 0.500 | – | – |
-| Logistic Regression | 0.376 | 0.645 | 0.059 | 0.228 → 0.190 |
-| **XGBoost** | **0.391** | **0.656** | **0.111** | 0.219 → 0.188 |
-
-The scheduled departure hour and the carrier's recent delay rate are the most important features.
+```
+.
+├── phase1/            Phase 1 (Machine Learning)
+│   ├── flight_delay_prediction.ipynb
+│   ├── figures/
+│   ├── report/
+│   ├── presentation/
+│   └── requirements.txt
+├── phase2/            Phase 2 (Deep Learning)
+└── .gitignore
+```
 
 ## Team
 
-| Member | Contribution |
-|--------|--------------|
-| Asad Ali | Data loading and EDA |
-| Divyansh Bhartia | Leakage removal and feature engineering |
-| [Vikrant Yadav](https://github.com/vikgenix) | Logistic Regression |
-| Mayank Pillai | XGBoost |
-| Prashant Raj | Evaluation metrics, probability calibration and confusion matrix |
-
+- Asad Ali
+- Divyansh Bhartia
+- [Vikrant Yadav](https://github.com/vikgenix)
+- Mayank Pillai
+- Prashant Raj
