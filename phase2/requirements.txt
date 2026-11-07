@@ -1,0 +1,22 @@
+# Core Data Science
+pandas
+numpy
+scipy
+
+# Machine Learning (Phase 1 baselines)
+scikit-learn
+xgboost
+
+# Deep Learning
+torch
+
+# Data Visualization
+matplotlib
+seaborn
+
+# Dataset & Compatibility
+nycflights13
+setuptools<81
+
+# Notebook Environment
+jupyter
