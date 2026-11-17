@@ -68,7 +68,7 @@ No hybrid ML + DL model was used, and the optional temporal model was left out.
 | Member | Contribution |
 |--------|--------------|
 | Asad Ali | Data preparation for the network (ids, standardisation, tensors) |
-| Divyansh Bhartia | MLP architecture and entity embeddings |
+| Divyansh Bhartia | Ablation study and comparison with Phase 1 |
 | [Vikrant Yadav](https://github.com/vikgenix) | Training loop, regularisation, early stopping and seed stability |
-| Mayank Pillai | Ablation study and comparison with Phase 1 |
+| Mayank Pillai | MLP architecture and entity embeddings |
 | Prashant Raj | Evaluation, calibration and what-if rescheduling analysis |
