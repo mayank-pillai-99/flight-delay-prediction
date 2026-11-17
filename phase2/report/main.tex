@@ -99,15 +99,15 @@ November--December (53{,}991, 25.8\%).
 
 \subsection{Preprocessing for the network}
 \textbf{Categorical inputs.} Carrier, origin and destination are mapped to integer ids built from the training set
-only. Id~0 is reserved for categories never seen in training; 57 test flights go to such a destination and use
-this shared ``unknown'' vector.
+only. Id~0 is reserved for categories never seen in training; 57 test flights go to such a destination. This
+row is never trained, so these flights get no learned destination information.
 
 \textbf{Numeric inputs.} The 14 numeric features are standardised to zero mean and unit variance with training
 statistics; missing history values (days without history) are filled with the training mean first.
 
 \textbf{Class imbalance.} Unlike Phase 1, the network is trained with the plain binary cross-entropy, without class
-weights. Weighting changes the predicted probabilities but not their ranking, so PR and ROC AUC are barely affected,
-while unweighted training keeps the probabilities close to the true delay rate.
+weights. Weighting mainly inflates the probabilities and barely changes their ranking, so PR and ROC AUC are
+little affected, while unweighted training keeps the probabilities close to the true delay rate.
 
 \section{Architecture}
 For a flight with numeric vector $x \in \mathbb{R}^{14}$ and category ids $c_1, c_2, c_3$, each id selects a row of an
@@ -161,7 +161,7 @@ trees remain very strong.
 
 \begin{table}[t]
 \centering
-\caption{Test set results (November--December 2013)}
+\caption{Test set results (Nov--Dec 2013); raw outputs, LR and XGBoost class-weighted}
 \label{tab:results}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lcccc}
@@ -190,8 +190,9 @@ score of 0.182 is the best of all models, and its mean prediction (0.244) is clo
 temperature $T = 0.785$ \emph{sharpened} the probabilities and lowered their mean to 0.203, raising the Brier score
 to 0.185. The cause is the seasonal shift: September--October had far fewer delays (15.7\%) than
 November--December (25.8\%), so any calibration fitted on them pulls predictions down. The isotonic-calibrated
-XGBoost from Phase 1 suffers from the same effect (Brier 0.188, mean prediction 0.175). We therefore keep the
-MLP's raw probabilities.
+XGBoost from Phase 1 suffers from the same effect (Brier 0.188, mean prediction 0.175). As the Phase 1
+models were class-weighted, this is the fair Brier comparison, and the MLP still wins. We keep its raw
+probabilities.
 
 \begin{figure}[t]
 \centering
@@ -236,8 +237,8 @@ No dropout / w.\ decay & 0.2687 & 0.3826 $\pm$ 0.0061 & 0.6499 \\
 \item \textbf{Embeddings} perform on par with one-hot encoding and with no categorical inputs at all; all three are
 within one standard deviation. The recent delay rates of the carrier, origin, destination and route already
 summarise most of what the categories add.
-\item \textbf{Regularisation} gives a small gain and, more clearly, more stable results: without dropout and weight
-decay the seed-to-seed standard deviation roughly doubles (0.0061 vs 0.0027).
+\item \textbf{Regularisation} changes the score only within noise (0.3845 vs 0.3826) but stabilises it: without dropout and weight decay the seed-to-seed standard deviation roughly doubles
+(0.0061 vs 0.0027).
 \end{itemize}
 The full model has the best validation PR AUC, which is how it was chosen; the test differences between the first
 three variants are within noise.
@@ -246,8 +247,8 @@ three variants are within noise.
 Fig.~\ref{fig:embed} projects the eight-dimensional carrier embeddings onto their first two principal components.
 The first component correlates only weakly with each carrier's training delay rate ($r = -0.25$). This agrees with
 the ablation: because the carrier's recent delay rate is already an input, the embeddings do not need to encode a
-carrier's overall delay level and instead capture smaller differences, for example in how a carrier's delays
-depend on the time of day. Carrier OO, with only seven training flights, is an outlier with an unreliable delay
+carrier's overall delay level and may instead capture smaller differences, for example in how a carrier's delays
+depend on the time of day; we did not test this. Carrier OO, with only seven training flights, is an outlier with an unreliable delay
 rate.
 
 \begin{figure}[t]
@@ -260,8 +261,9 @@ rate.
 \section{What-If Rescheduling Analysis}
 The Project 21 brief asks for an offline rescheduling analysis based on explicit assumptions. We take the 10\% of
 test flights with the highest predicted risk (5{,}400 flights, risk $\ge 0.429$) and re-score each one with its
-departure moved by $-2$, $-1$, $+1$ or $+2$ hours, assuming that: the flight stays on the same day, departs between
-05:00 and 23:59 and does not arrive after midnight; the arrival moves by the same amount; route, carrier, date and
+departure moved by $-2$, $-1$, $+1$ or $+2$ hours, assuming that: the flight stays on the same day; the arrival moves by the same
+amount; departure stays within 05--23\,h and arrival within 00--23\,h, so no flight
+crosses midnight; route, carrier, date and
 history features are unchanged; congestion is recomputed for the new hour; flights are moved one at a time; and
 crews, aircraft rotations, gates and passengers are ignored. A move is recommended only if it lowers the predicted
 risk.
